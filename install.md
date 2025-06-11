@@ -67,21 +67,16 @@ followed this [Guide](https://noreply.gitbook.io/born2beroot/installing-debian/b
 | LVolumes  | size MB | 1% R.S. MB | total MB | mount point |
 |-----------|---------|------------|----------|-------------|
 | root      |  10737  |    107     |  10844   | `/`         |
-| swap      |  2470   |    -25-    |  -2495-  | none        |
+| swap      |  2470   |    none    | use size | none        |
 | home      |  5369   |    54      |  5423    | `/home`     |
 | var       |  3221   |    32      |  3253    | `/var`      |
 | srv       |  3221   |    32      |  3253    | `/srv`      |
 | tmp       |  3221   |    32      |  3253    | `/tmp`      |
 | var-log   |  4295   |    43      |  4338    | `/var/log`  |
 
-### Guided:
+### Closing steps
 
-- [...] **"Guided - use entire disk and set up encrypted LVM"** then select **"Separate /home, /var and /tmp partitions"** [...]
-- LVM stands for Local Volume Manager
-- Encrypted Password: NaFinaPeneira3,32
-
-after all the disk space is partitioned and encrypted:
-- selected only 15GB out of the max when prompted (this is to have the rest of the space available to create new LogicalVolumes)
-- I went to "Configure the Logical Volume Manager" then "Create Logical volume name".
-- Created `srv` with 3GB and `var-log` with 4GB, both as "Ext4 journaling file system" and mounted on `/srv` and `/var/log/`
-need to devide partitions into groups
+- choose country then deb.debian.org
+- "no" to statistics
+- install GRUB
+- reboot
