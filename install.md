@@ -33,7 +33,7 @@ schemes to store volumes.
 followed this [Guide](https://noreply.gitbook.io/born2beroot/installing-debian/bonus-partition-disks)
 
 - Choose device then create new partition table
-- select the partition table available
+- select the partition table available, the one that says **FREE SPACE**
 #### "Create new partition":
 
 - sda1 with 537MB, OS will be installed here
@@ -52,10 +52,26 @@ followed this [Guide](https://noreply.gitbook.io/born2beroot/installing-debian/b
 - select sda5
 #### "Create Logical Volume[s]" - create sub volumes for LV group sda5
 
-- reserverd blocks: 1%
+- reserved blocks: 1%
 
-- root    - size 10737MB
-- swap    - size 2470MB
+10737 ---- 100%
+  x   ---- 1%
+
+10737 ? 100 = 107.37
+            
+| LVolumes  | size | 1% R.S.| total MB | mount point |
+|-----------|------|--------|----------|-------------|
+| root      |      |        |          | `/` |
+| swap      |      |        |          | - |
+| home      |      |        |          | `/home` |
+| var       |      |        |          | `/var` |
+| srv       |      |        |          | `/srv` |
+| tmp       |      |        |          | `/tmp` |
+| var-log   |      |        |          | `/var/log` |
+
+            actual size  +   RS. 1%
+- root    - size 10737MB + 107MB(RS1%) = 10844 MB
+- swap    - size 2470MB  + 
 - home    - size 5369MB
 - var     - size 3221MB
 - srv     - size 3221MB
