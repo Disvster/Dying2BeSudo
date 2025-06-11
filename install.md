@@ -64,7 +64,7 @@ followed this [Guide](https://noreply.gitbook.io/born2beroot/installing-debian/b
 - reserved blocks: 1%
 - "Use as:Ext4 journaling file system" exept for `swap` that has its own option
 
-| LVolumes  | size MB | 1% R.S. MB | total MB | mount point |
+| LVolumes  | size MB | 1% R.B. MB | total MB | mount point |
 |-----------|---------|------------|----------|-------------|
 | root      |  10737  |    107     |  10844   | `/`         |
 | swap      |  2470   |    none    | use size | none        |
