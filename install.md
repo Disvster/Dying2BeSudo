@@ -59,15 +59,15 @@ followed this [Guide](https://noreply.gitbook.io/born2beroot/installing-debian/b
 
 10737 ? 100 = 107.37
             
-| LVolumes  | size | 1% R.S.| total MB | mount point |
-|-----------|------|--------|----------|-------------|
-| root      |      |        |          | `/` |
-| swap      |      |        |          | - |
-| home      |      |        |          | `/home` |
-| var       |      |        |          | `/var` |
-| srv       |      |        |          | `/srv` |
-| tmp       |      |        |          | `/tmp` |
-| var-log   |      |        |          | `/var/log` |
+| LVolumes  | size MB | 1% R.S. MB | total MB | mount point |
+|-----------|---------|------------|----------|-------------|
+| root      | 10737   |            |          | `/`         |
+| swap      | 2470    |            |          | none        |
+| home      | 5369    |            |          | `/home`     |
+| var       | 3221    |            |          | `/var`      |
+| srv       | 3221    |            |          | `/srv`      |
+| tmp       | 3221    |            |          | `/tmp`      |
+| var-log   | 4295    |            |          | `/var/log`  |
 
             actual size  +   RS. 1%
 - root    - size 10737MB + 107MB(RS1%) = 10844 MB
