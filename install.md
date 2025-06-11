@@ -46,10 +46,10 @@ followed this [Guide](https://noreply.gitbook.io/born2beroot/installing-debian/b
     - logical partition
     - **encrypted**
     - "beginning"
-    - "mount point: **Do not mount it**" (no mounting point)
+    - "mount point: **Do not mount it**"
 
 - "Configure encrypted volumes", "yes", "Create encrypted volumes"
-- we want to encrypted the logical partition aka /dev/sda5
+- we want to encrypt the logical partition aka /dev/sda5
 - "Done [...] Finish [...], fill data: yes" (opt: "cancel")
 - Encrypted Password: NaFinaPeneira3,32
 - "Configure the Logical Volume Manager"
@@ -62,7 +62,7 @@ followed this [Guide](https://noreply.gitbook.io/born2beroot/installing-debian/b
 #### "Create Logical Volume[s]" - create sub volumes for LV group sda5
 
 - reserved blocks: 1%
-- Use as:Ext4 journaling file system exept `swap`
+- "Use as:Ext4 journaling file system" exept for `swap` that has its own option
 
 | LVolumes  | size MB | 1% R.S. MB | total MB | mount point |
 |-----------|---------|------------|----------|-------------|
