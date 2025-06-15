@@ -2,13 +2,13 @@
 
 Todo: resize the LogicalVolumes to match the ones in the bonus part of the subject.
 
-## sudo and user configuration
+## sudo and user/groups configuration
 
 **sudo**: 'superuser do'; sudo lets a user run commands as if they were `su`.
 
 **su**: the machine's super-user; has perminission to do eveything, also refered to as `root`.
 
-### install su
+### install sudo
 
 ```
 su
@@ -17,7 +17,7 @@ apt install sudo
 sudo reboot
 [after reboot]
 su
-sudo -V (idk why, double check after if needed)
+sudo -V [info about sudo]
 ```
 
 ### adding users to sudo group
@@ -43,12 +43,29 @@ sudo adduser manmaria sudo
 ```
 getent group sudo user42
 ```
+
+### Editing sudo policies
+
+- `sudo visudo` opens a sudo config file that lets us change sudo's settings
+- I use vim (default is nano) so to change `visudo`'s editor we type
+```
+sudo update-alternatives --config editor
+[vim for me was number:] 3
+```
+**CHANGES IN SUDO CONFIGS (using `visudo`)**
+- `Defaults secure_path="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/snap/bin"`
+- `Defaults  requiretty`
+- `Defaults passwd_tries=3`
+- `Defaults badpass_message="Success!"`
+- `Defaults logfile="/var/log/sudo/sudo.log"` | sudo in\outputs will be logged in this file
+- `Defaults log_input` & `Defaults log_output` | Logs sudo in/outputs
+- `Defaults iolog_dir="/var/log/sudo"` | the directory to save additional output and input logs.
+
 ## VIM
 
 ```
 sudo apt install vim
 ```
-
 
 ## SSH
 
@@ -62,11 +79,9 @@ to verify `ssh` is up-and-running we can run one of two commands:
 sudo systemctl status ssh
 sudo service ssh status
 ```
----
 
-useful info about systemctl vs service command [here](https://askubuntu.com/questions/903354/difference-between-systemctl-and-service-commands)
+- useful info about systemctl vs service command [here](https://askubuntu.com/questions/903354/difference-between-systemctl-and-service-commands)
 
----
 update **ssh-server config** to set ssh's port to **4242** and to disable logging in as `root` when ssh-ing.
 
 - change to root with `su`
@@ -87,10 +102,68 @@ sudo service ssh status
 
 In VirtualBox: open the machine's 'Settings -> 'Network' -> 'Advanced' -> 'Port Forwarding'
 
-In 'Port Forwarding Rules', create a new rule (gree icon at the right), name it "SSH", add a 'Host Port' (2728 is coolio) and a 'Guest Port' (4242).
+In 'Port Forwarding Rules', create a new rule (gree icon at the right), name it "SSH", add a 'Host Port' (2332 is coolio) and a 'Guest Port' (4242).
 
-Now VirtualBox listens to requests on host's port 2728 and forwards them the VM's port 4242.
+Now VirtualBox listens to requests on host's port 2332 and forwards them to the VM's port 4242.
 
+---
 `netstat | grep 2728`
-
 - try BRIDGED instead of NAT as network protocol; to ssh: `ssh [ip] -p 4242` 
+---
+
+### SSHing into the VM
+
+on host machine's terminal write `ssh [user]@localhost -p 2332`, insert user's password and now you're connected to the VM as [user]!
+
+## setting up the Firewall - UFW
+
+UFW is user-friendly and effective for managing firewall rules. installing UFW:
+
+- `sudo apt install UFW`
+- `sudo ufw defult deny incoming` | Blocks all incoming requests
+- `sudo ufw default allow outgoing` | Allow all outgoing requests
+- `sudo ufw allow 4242` | Allow incoming traffic on port 4242
+- `sudo ufw enable` | Enable ufw system-wide
+- `sudo ufw status` | Check status and allowed ports
+
+## Password Policy
+
+we need to edit the password policy config file
+- `sudo vim /etc/login.defs`
+- `PASS_MAX_DAYS 30` | passwords have a 30 lifespan
+- `PASS_MIN_DAYS 2` | min nbr of days allowed between passwd changes
+- `PASS_WARN_AGE 7` | nbr of days warning given before passwd expires
+we need to set these params for our previous set passwords aka `root` and `<user>`:
+- do this for user and root, `-M` is MAX_DAYS and `-m` is MIN_DAYS:
+```
+sudo chage -M 30 <user>
+sudo chage -m 2 <user>
+```
+- to check user password stats run the `sudo chage -l <user>` 
+
+now to strenghten our password policy we need to install a module called `pwquality`
+- `sudo aptget install libpam-pwquality`
+- `sudo vim /etc/pam.d/common-password` | to open the config file for the pwquality
+- change
+```
+password    requisite   pam_pwquality.so retry=3
+```
+to
+```
+password    requisite   pam_pwquality.so retry=3 minlen=10 ucredit=-1 dcredit=-1 lcredit=-1 maxrepeat=3 difok=7 reject_username enforce_for_root
+```
+- `retry` number of max password retries (we already set this above but we can keep it)
+- `minlen` the minimum character lenght a password has to have
+- `ucredit` at least a uppercase character
+- `dcredit` at least a digit character
+- `lcredit` at least a lowercase letter
+- `maxrepeat` the maximum number of allowed consecutive characters 
+- `difok` number of characters the new password has to differ from old
+- `reject_username` doesn't allow the user to input his username in the password
+- `enforce_for_root` all the above apply for root password
+
+- `sudo passwd <user>` change new password for root and user with these new policies
+
+## Monitoring Script 
+
+LEFT OF HERE
