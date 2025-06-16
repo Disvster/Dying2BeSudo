@@ -34,10 +34,10 @@ sudo adduser <user_login>
 sudo addgroup user42
 ```
 
-#### add user to group
+#### add user to groups
 ```
-sudo adduser manmaria user42
-sudo adduser manmaria sudo
+sudo adduser <user_login> user42
+sudo adduser <user_login> sudo
 ```
 #### check users in groups
 ```
@@ -47,16 +47,16 @@ getent group sudo user42
 ### Editing sudo policies
 
 - `sudo visudo` opens a sudo config file that lets us change sudo's settings
-- I use vim (default is nano) so to change `visudo`'s editor we type
+- I use vim (default is nano, vim install is below) so to change `visudo`'s editor we type
 ```
 sudo update-alternatives --config editor
 [vim for me was number:] 3
 ```
 **CHANGES IN SUDO CONFIGS (using `visudo`)**
 - `Defaults secure_path="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/snap/bin"`
-- `Defaults  requiretty`
+- `Defaults requiretty`
 - `Defaults passwd_tries=3`
-- `Defaults badpass_message="Success!"`
+- `Defaults badpass_message="Success!"` (hihi)
 - `Defaults logfile="/var/log/sudo/sudo.log"` | sudo in\outputs will be logged in this file
 - `Defaults log_input` & `Defaults log_output` | Logs sudo in/outputs
 - `Defaults iolog_dir="/var/log/sudo"` | the directory to save additional output and input logs.
@@ -69,10 +69,10 @@ sudo apt install vim
 
 ## SSH
 
-SecureSHell protocol lets you control a machine remotely. It uses a **network _port_** (that you have to set-up) to open the communication between the host machine and the one operating it remotely.
+SecureSHell protocol lets you control a machine remotely. It uses a **network port** (that you have to set-up) to open the communication between the host machine and (in this case) the VirtualMachine.
 
-- update pkgs with `sudo apt update`
-- install the pkg openssh-service to use the SSH protocol: `sudo apt install openssh-service`
+- update packages with `sudo apt update`
+- install the openssh-service package to use the SSH protocol: `sudo apt install openssh-service`
 
 to verify `ssh` is up-and-running we can run one of two commands:
 ```
@@ -106,9 +106,9 @@ In 'Port Forwarding Rules', create a new rule (gree icon at the right), name it 
 
 Now VirtualBox listens to requests on host's port 2332 and forwards them to the VM's port 4242.
 
+- `netstat | grep [port number]` on Host machine to check port connection
 ---
-`netstat | grep 2728`
-- try BRIDGED instead of NAT as network protocol; to ssh: `ssh [ip] -p 4242` 
+- try BRIDGED instead of NAT as network protocol of VM (VM's settings); to ssh: `ssh [vm's ip] -p 4242` 
 ---
 
 ### SSHing into the VM
@@ -158,12 +158,12 @@ password    requisite   pam_pwquality.so retry=3 minlen=10 ucredit=-1 dcredit=-1
 - `dcredit` at least a digit character
 - `lcredit` at least a lowercase letter
 - `maxrepeat` the maximum number of allowed consecutive characters 
-- `difok` number of characters the new password has to differ from old
 - `reject_username` doesn't allow the user to input his username in the password
 - `enforce_for_root` all the above apply for root password
+- `difok` number of characters the new password has to differ from old
 
-- `sudo passwd <user>` change new password for root and user with these new policies
+change new password for root and user with these new policies `sudo passwd <user>` (if they do not adhere to these policies already)
 
 ## Monitoring Script 
 
-LEFT OF HERE
+
