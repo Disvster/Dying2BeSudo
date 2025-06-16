@@ -3,7 +3,7 @@
 ARCH="#Architecture: " "uname -a"
 CPU="#CPU Physical: " "nproc --all" # OR 16 if physical processors in host machine
 VCPU="#vCPU: " "nproc --all" # virtual CPU is only one
-MEM_U="#Memory Usage: "
+MEM_U="#Memory Usage: " "free | grep Mem | awk '{ printf("%d/%dMB (%.2f%%)\n", $3,$2, $3/$2 * 100.0) }'"
 DISK_U="#Disk Usage: "
 CPU_LD="#CPU Load: "
 LS_BOOT="#Last Boot: "
