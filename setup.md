@@ -58,6 +58,7 @@ sudo update-alternatives --config editor
 - `Defaults passwd_tries=3`
 - `Defaults badpass_message="Success!"` (hihi)
 - `Defaults logfile="/var/log/sudo/sudo.log"` | sudo in\outputs will be logged in this file
+- outputs are not logged nowhere i think
 - `Defaults log_input` & `Defaults log_output` | Logs sudo in/outputs
 - `Defaults iolog_dir="/var/log/sudo"` | the directory to save additional output and input logs.
 
@@ -166,4 +167,6 @@ change new password for root and user with these new policies `sudo passwd <user
 
 ## Monitoring Script 
 
-
+- every measuring unit in script will be in power of 1000^x
+- for last reboot I'll use the `who - b` command, but `last reboot` is also an option. `| head -1` will get the first linewhereas `tail -1` gets the last line
+- installed `mpstat` package for CPU load percentage

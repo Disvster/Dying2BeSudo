@@ -2,7 +2,7 @@
 
 ## machine hardware and virtual disk space
 
-- Disk Space: 31.10GB(bin)
+- Disk Space: 31.10GiB(bin)
 - Base Memory (RAM): 4710MB(bin) (change it to double the swap see bonus)
 - Processors: 1 CPU
 - vCPU ?? check this
