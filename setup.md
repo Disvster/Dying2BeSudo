@@ -170,3 +170,41 @@ change new password for root and user with these new policies `sudo passwd <user
 - every measuring unit in script will be in power of 1000^x
 - for last reboot I'll use the `who - b` command, but `last reboot` is also an option. `| head -1` will get the first linewhereas `tail -1` gets the last line
 - installed `mpstat` package for CPU load percentage
+
+# BONUS
+
+## Wordpress Website
+
+we need to set up a WordPress website that our VM will host as a server for it.
+to do that we will need to download 3 packages:
+
+- `lighttpd` is an open-source, super fast and lightweight web server;
+- `mariadb-server` a fork of MySQL, a data management system;
+- `php-cgi` & `php-mysql` PHP is a programming language, there are pkgs to run wb apps and connect to a MariaDB(MySQL) database
+- `wget` to download files from the web
+
+we need to open open connections through port 80
+- `sudo ufw allow 80` to open and `sudo ufw status` to check active ports
+then we need to open VM network settings and add a new rule that redirects port 80 to the host's port 8080, exactly like we did for ssh just diferent ports
+
+### installing WordPress
+- cd `/var/www/`
+- `sudo wget https://wordpress.org/latest.tar.gz` | latest WP version
+- `sudo tar -xpf *.tar.gz` && `sudo rm *.tar.gz` | extrat and delete dwl file
+- `sudo mv html html_old` && `sudo mv wordpress html`
+
+### MariaDB
+- `sudo mysql_secure_installation` this script is intended to protect your MariaDB server installation. answears are: nnYYYY
+- switch to sudo then we'll type `mariadb` to enter it
+- `CREATE DATABASE wordpress_db`
+- `CREATE USER 'manmaria'@'localhost' IDENTIFIED BY '12345';`
+- `GRANT ALL PRIVILEGES ON wp_database.* TO 'manmaria'@'localhost';`
+
+### setting up WordPress
+- switch to root
+- cd `/var/www/html`
+- `cp wp-config-sample.php wp-config.php` and `vim wp-config.php`
+- inside the .php file define database, user and password(12345) with the info above
+- `sudo lighty-enable-mod fastcgi && sudo lighty-enable-mod fastcgi-php && sudo service lighttpd force-reload`
+- connect to site by typing in browser `localhost:8080`
+- TODO: edit site
