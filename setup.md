@@ -208,3 +208,31 @@ then we need to open VM network settings and add a new rule that redirects port 
 - `sudo lighty-enable-mod fastcgi && sudo lighty-enable-mod fastcgi-php && sudo service lighttpd force-reload`
 - connect to site by typing in browser `localhost:8080`
 - TODO: edit site
+
+## Minecraft server hihi
+
+I'm running a minecraft server on my VM as part of the project bonus!
+
+```
+sudo apt install default-jre
+wget https://piston-data.mojang.com/v1/objects/f69c284232d7c7580bd89a5a4931c3581eae1378/server.ja
+rmkdir ~/minecraft-server && mv server.jar minecraft-server && cd minecraft-server
+echo "eula=true" > eula.txt # we have to agree to the EULA
+vim server.properties
+[
+    level-seed=2151901553968352745
+    level-name=menu-world
+    motd=ft_minecraft_server
+    max-players=5
+    view-distance=7
+]
+sudo ufw allow 25565
+```
+- add a rule to VM to port forward port `25565` to an available port in host (`25565` should be fine)
+```
+vim start-mining.sh 
+"#!/bin/bash
+java -Xms512M -Xmx1024 -jar server.jar nogui"
+chmod +x start-mining.sh
+mv start-mining.sh /usr/local/bin
+``` 
