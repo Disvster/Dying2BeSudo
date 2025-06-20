@@ -229,6 +229,7 @@ vim server.properties
 sudo ufw allow 25565
 ```
 - add a rule to VM to port forward port `25565` to an available port in host (`25565` should be fine)
+
 ```
 vim start-mining.sh 
 "#!/bin/bash
