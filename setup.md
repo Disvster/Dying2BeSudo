@@ -207,7 +207,12 @@ then we need to open VM network settings and add a new rule that redirects port 
 - inside the .php file define database, user and password(12345) with the info above
 - `sudo lighty-enable-mod fastcgi && sudo lighty-enable-mod fastcgi-php && sudo service lighttpd force-reload`
 - connect to site by typing in browser `localhost:8080`
-- TODO: edit site
+- WP password: dJ#5iXLb6^vue4!HOetR$1rT
+- to upload files to WordPress:
+```
+sudo mkdir /var/www/html/wp-content/uploads
+sudo chown -R www-data:www-data wp-content/uploads
+```
 
 ## Minecraft server hihi
 
@@ -237,3 +242,72 @@ java -Xms512M -Xmx1024 -jar server.jar nogui"
 chmod +x start-mining.sh
 mv start-mining.sh /usr/local/bin
 ``` 
+
+### lets create a dedicated user to run this server on:
+
+```
+# Create a group called 'minecraft'
+sudo groupadd minecraft
+
+# Create a user 'minecraft', add it to the 'minecraft' group
+sudo useradd -r -m -d /srv/minecraft -s /bin/bash -g minecraft minecraft
+
+# Move previously created minecraft-server files to new location
+sudo mv ~/minecraft-server/* /srv/minecraft/
+rmdir ~/minecraft-server
+
+# Set correct ownership and permissions
+sudo chown -R minecraft:minecraft /srv/minecraft
+sudo chmod -R 750 /srv/minecraft
+```
+- `-r`: system user (no password, no login)
+- `-m`: create home directory
+- `-d /srv/minecraft`: set home directory to /srv/minecraft
+- `-s /bin/bash`: will run on bash
+- `-g minecraft`: primary group
+
+### now to create a systemd service
+
+download the `screen` command to run the server in the background but also be able to reatach to the session it is running on
+```
+sudo apt install screen
+```
+
+create a edit this `/etc/systemd/system/minecraft.service` file:
+```
+[Unit]
+Description=Minecraft Server
+After=network.target
+
+[Service]
+WorkingDirectory=/srv/minecraft
+User=minecraft
+Group=minecraft
+Restart=always
+ExecStart=/usr/bin/screen -DmS minecraft /usr/bin/java -Xmx1024M -Xms1024M -jar server.jar nogui
+
+[Install]
+WantedBy=multi-user.target
+```
+flags used in `screen`:
+- `-D`: Detach an already running screen session with the same name (if it exists).
+- `-m`: Start screen in “detached” mode. This means the screen session will start running in the background (you don’t need to attach to it immediately).
+- `-S` minecraft: Name the screen session minecraft for easy identification and management.
+
+start the service:
+```
+# To start it on boot:
+sudo systemctl enable minecraft
+# To start it now:
+sudo systemctl start minecraft
+# To check its status:
+sudo systemctl status minecraft
+```
+
+To attach to the Minecraft server console later, run:
+```
+sudo su - minecraft
+screen -r minecraft
+```
+
+You’ll then see the live console and can enter Minecraft server commands. To detach without stopping the server, press `Ctrl+A` then `D`.
