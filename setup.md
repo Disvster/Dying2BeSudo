@@ -1,7 +1,5 @@
 # Setting up a clean install of the VM
 
-Todo: resize the LogicalVolumes to match the ones in the bonus part of the subject.
-
 ## sudo and user/groups configuration
 
 **sudo**: 'superuser do'; sudo lets a user run commands as if they were `su`.

@@ -1,0 +1,2 @@
+- `lsblk` for partitions
+- `getent group sudo user42` check if user is in these groups
