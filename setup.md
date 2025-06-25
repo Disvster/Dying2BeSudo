@@ -42,6 +42,12 @@ sudo adduser <user_login> sudo
 getent group sudo user42
 ```
 
+### VIM
+
+```
+sudo apt install vim
+```
+
 ### Editing sudo policies
 
 - `sudo visudo` opens a sudo config file that lets us change sudo's settings
@@ -60,11 +66,49 @@ sudo update-alternatives --config editor
 - `Defaults log_input` & `Defaults log_output` | Logs sudo in/outputs
 - `Defaults iolog_dir="/var/log/sudo"` | the directory to save additional output and input logs.
 
-## VIM
+## Password Policy
 
+we need to edit the password policy config file
+- `sudo vim /etc/login.defs`
+- `PASS_MAX_DAYS 30` | passwords have a 30 lifespan
+- `PASS_MIN_DAYS 2` | min nbr of days allowed between passwd changes
+- `PASS_WARN_AGE 7` | nbr of days warning given before passwd expires
+we need to set these params for our previous set passwords aka `root` and `<user>`:
+- do this for user and root, `-M` is MAX_DAYS and `-m` is MIN_DAYS:
 ```
-sudo apt install vim
+sudo chage -M 30 <user>
+sudo chage -m 2 <user>
 ```
+- to check user password stats run the `sudo chage -l <user>` 
+
+now to strenghten our password policy we need to install a module called `pwquality`
+- `sudo aptget install libpam-pwquality`
+- `sudo vim /etc/pam.d/common-password` | to open the config file for the pwquality
+- change
+```
+password    requisite   pam_pwquality.so retry=3
+```
+to
+```
+# For root: no difok
+password requisite pam_succeed_if.so user = root
+password requisite pam_pwquality.so retry=3 minlen=10 ucredit=-1 dcredit=-1 lcredit=-1 maxrepeat=3 reject_username
+
+# For all other users: with difok
+password requisite pam_succeed_if.so user != root
+password requisite pam_pwquality.so retry=3 minlen=10 ucredit=-1 dcredit=-1 lcredit=-1 maxrepeat=3 reject_username difok=7
+```
+- `retry` number of max password retries (we already set this above but we can keep it)
+- `minlen` the minimum character lenght a password has to have
+- `ucredit` at least a uppercase character
+- `dcredit` at least a digit character
+- `lcredit` at least a lowercase letter
+- `maxrepeat` the maximum number of allowed consecutive characters 
+- `reject_username` doesn't allow the user to input his username in the password
+- `enforce_for_root` all the above apply for root password
+- `difok` number of characters the new password has to differ from old
+
+change new password for root and user with these new policies `sudo passwd <user>` (if they do not adhere to these policies already)
 
 ## SSH
 
@@ -125,43 +169,6 @@ UFW is user-friendly and effective for managing firewall rules. installing UFW:
 - `sudo ufw enable` | Enable ufw system-wide
 - `sudo ufw status` | Check status and allowed ports
 
-## Password Policy
-
-we need to edit the password policy config file
-- `sudo vim /etc/login.defs`
-- `PASS_MAX_DAYS 30` | passwords have a 30 lifespan
-- `PASS_MIN_DAYS 2` | min nbr of days allowed between passwd changes
-- `PASS_WARN_AGE 7` | nbr of days warning given before passwd expires
-we need to set these params for our previous set passwords aka `root` and `<user>`:
-- do this for user and root, `-M` is MAX_DAYS and `-m` is MIN_DAYS:
-```
-sudo chage -M 30 <user>
-sudo chage -m 2 <user>
-```
-- to check user password stats run the `sudo chage -l <user>` 
-
-now to strenghten our password policy we need to install a module called `pwquality`
-- `sudo aptget install libpam-pwquality`
-- `sudo vim /etc/pam.d/common-password` | to open the config file for the pwquality
-- change
-```
-password    requisite   pam_pwquality.so retry=3
-```
-to
-```
-password    requisite   pam_pwquality.so retry=3 minlen=10 ucredit=-1 dcredit=-1 lcredit=-1 maxrepeat=3 difok=7 reject_username enforce_for_root
-```
-- `retry` number of max password retries (we already set this above but we can keep it)
-- `minlen` the minimum character lenght a password has to have
-- `ucredit` at least a uppercase character
-- `dcredit` at least a digit character
-- `lcredit` at least a lowercase letter
-- `maxrepeat` the maximum number of allowed consecutive characters 
-- `reject_username` doesn't allow the user to input his username in the password
-- `enforce_for_root` all the above apply for root password
-- `difok` number of characters the new password has to differ from old
-
-change new password for root and user with these new policies `sudo passwd <user>` (if they do not adhere to these policies already)
 
 ## Monitoring Script 
 
