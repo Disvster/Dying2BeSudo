@@ -91,11 +91,10 @@ password    requisite   pam_pwquality.so retry=3
 to
 ```
 # For root: no difok
-password requisite pam_succeed_if.so user = root
-password requisite pam_pwquality.so retry=3 minlen=10 ucredit=-1 dcredit=-1 lcredit=-1 maxrepeat=3 reject_username
+password [success=1 default=ignore] pam_succeed_if.so user = root
+password requisite pam_pwquality.so retry=3 minlen=10 ucredit=-1 dcredit=-1 lcredit=-1 maxrepeat=3 reject_username enforce_for_root
 
 # For all other users: with difok
-password requisite pam_succeed_if.so user != root
 password requisite pam_pwquality.so retry=3 minlen=10 ucredit=-1 dcredit=-1 lcredit=-1 maxrepeat=3 reject_username difok=7
 ```
 - `retry` number of max password retries (we already set this above but we can keep it)
